@@ -1,7 +1,17 @@
-import React, { Component } from 'react'
+// Shelfs for the books
+const shelfs = [
+  {
+		id: "currentlyReading",
+		title: "Currently Reading"
+	},
+	{
+		id: "wantToRead",
+		title: "Want to Read"
+	},
+  {
+  	id: "read",
+  	title:"Read"
+  }
+]
 
-class Shelfs extends Component {
-	
-}
-
-export default Shelfs
+export default shelfs
