@@ -7,7 +7,7 @@ import searchTerms from './searchTerms'
 
 class Search extends Component {
 	state  = {
-		searchResults: '',
+		searchResults: [],
 		query: ''
 	}
 
@@ -40,10 +40,32 @@ class Search extends Component {
 		}
 	}
 
-	render() {
-		const { onUpdateBook } = this.props
-		const { searchResults } = this.state
+	inShelf(books, book) {
+		for (const b of books) {
+			if(b.id === book.id) {
+				return b
+			}
+		}
+		return null
+	}
 
+	render() {
+		const { onUpdateBook, books } = this.props
+		const { searchResults } = this.state
+		
+		// get the books which are already shelfed
+		// and capture their current shelf
+		// for the rest make the shelf empty
+		const searchedBooks = searchResults.map((book) => {
+			const shelfedBook = this.inShelf(books, book);
+			if(shelfedBook) {
+				book.shelf = shelfedBook.shelf
+			} else {
+				book.shelf = ''
+			}
+			return book
+		})
+				
 		return (
 			<div className="search-books">
 				<div className="search-books-bar">
@@ -64,8 +86,8 @@ class Search extends Component {
             />
           </div>
 				</div>
-				{searchResults.length && (<div className="search-books-results">
-					<BookGrid books={searchResults} onUpdateBook={onUpdateBook} />
+				{searchedBooks.length && (<div className="search-books-results">
+					<BookGrid books={searchedBooks} onUpdateBook={onUpdateBook} />
 				</div>
 				)}
 			</div>
