@@ -27,7 +27,8 @@ class Search extends Component {
 	updateQuery = (q) => {
 		const searchQuery = q.trim()
 		this.setState({ query: searchQuery })
-		
+		// Search only for allowed terms
+		// Clear state when the search field is empty or query length is less than 3
 		if(searchQuery === "" || searchQuery.length <= 2) {
 			this.setState({ searchResults: [] })
 		} else {
@@ -52,19 +53,22 @@ class Search extends Component {
 	render() {
 		const { onUpdateBook, books } = this.props
 		const { searchResults } = this.state
-		
+		let searchedBooks
 		// get the books which are already shelfed
 		// and capture their current shelf
 		// for the rest make the shelf empty
-		const searchedBooks = searchResults.map((book) => {
-			const shelfedBook = this.inShelf(books, book);
-			if(shelfedBook) {
-				book.shelf = shelfedBook.shelf
-			} else {
-				book.shelf = ''
-			}
-			return book
-		})
+		if(searchResults.length) {
+			searchedBooks = searchResults.map((book) => {
+				const shelfedBook = this.inShelf(books, book);
+				if(shelfedBook) {
+					book.shelf = shelfedBook.shelf
+				} else {
+					book.shelf = ''
+				}
+				return book
+			})	
+		}
+		
 				
 		return (
 			<div className="search-books">
@@ -86,7 +90,7 @@ class Search extends Component {
             />
           </div>
 				</div>
-				{searchedBooks.length && (<div className="search-books-results">
+				{searchedBooks && (<div className="search-books-results">
 					<BookGrid books={searchedBooks} onUpdateBook={onUpdateBook} />
 				</div>
 				)}
